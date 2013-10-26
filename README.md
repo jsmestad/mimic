@@ -1,4 +1,7 @@
-# What is Mimic?
+# Mimic, simple web service stubs for testing [![Build Status](https://secure.travis-ci.org/lukeredpath/mimic.png)](https://secure.travis-ci.org/lukeredpath/mimic)
+
+## What is Mimic?
+
 Mimic is a testing tool that lets you set create a fake stand-in for an external web service to be used when writing integration/end-to-end tests for applications or libraries that access these services.
 
 ## Why not stub?
@@ -48,10 +51,17 @@ Finally, because Mimic is built on top of Sinatra for the core request handling,
 
 Mimic has a built-in REST API that lets you configure your request stubs over HTTP. This makes it possible to use Mimic from other processes that can perform HTTP requests.
 
-First of all, you'll need to run Mimic as a daemon. You can do this with a simple Ruby script:
+First of all, you'll need to run Mimic as a daemon. You can do this with a simple Ruby script and the [daemons](http://daemons.rubyforge.org/) gem:
 
     #!/usr/bin/env ruby
-    Mimic.daemonize({:port => 11988, :remote_configuration_path => '/api'})
+    require 'mimic'
+    require 'daemons'
+    
+    Daemons.run_proc("mimic") do
+      Mimic.mimic(:port => 11988, :fork => false, :remote_configuration_path => '/api') do
+        # configure your stubs here
+      end
+    end
     
 Give the script executable permissions and then start it:
 
@@ -74,6 +84,8 @@ Likewise, a POST request to the same path could be stubbed like so:
     $ curl -d'{"path":"/some/path", "body":"hello world"}' http://localhost:11988/api/post
 
 The end-point of the API is the HTTP verb you are stubbing, the path, response body, code and headers are specified in the POST data (a hash in JSON or Plist format). See the HTTP API Cucumber features for more examples.
+
+An [Objective-C wrapper](http://github.com/lukeredpath/LRMimic) for the REST API is available, allowing you to use mimic for your OSX and iOS apps.
 
 ## Contributors
 

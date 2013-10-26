@@ -15,6 +15,10 @@ module Mimic
       build_url_map!
     end
     
+    def received_requests
+      @stubs.select { |s| s.received }
+    end
+    
     def get(path, &block)
       request("GET", path, &block)
     end
@@ -127,19 +131,21 @@ module Mimic
       def to_hash
         {"echo" => {
           "params" => @request.params,
-          "env"    => env_without_rack_env,
+          "env"    => env_without_rack_and_async_env,
           "body"   => @request.body.read
         }}
       end
       
       private
       
-      def env_without_rack_env
-        Hash[*@request.env.select { |key, value| key !~ /^rack/i }.flatten]
+      def env_without_rack_and_async_env
+        Hash[*@request.env.select { |key, value| key !~ /^(rack|async)/i }.flatten]
       end
     end
     
     class StubbedRequest
+      attr_accessor :received
+      
       def initialize(app, method, path)
         @method, @path = method, path
         @code = 200
@@ -147,6 +153,12 @@ module Mimic
         @params = {}
         @body = ""
         @app = app
+        @received = false
+      end
+      
+      def to_hash
+        token = "#{@method} #{@path}"
+        Digest::MD5.hexdigest(token)
       end
       
       def returning(body, code = 200, headers = {})
@@ -193,7 +205,11 @@ module Mimic
       
       def build
         stub = self
-        @app.send(@method.downcase, @path) { stub.response_for_request(request) }
+
+        @app.send(@method.downcase, @path) do
+          stub.received = true
+          stub.response_for_request(request)
+        end
       end
     end
   end

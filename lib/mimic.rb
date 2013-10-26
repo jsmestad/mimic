@@ -59,24 +59,15 @@ module Mimic
     end
 
     def start_service(app, options)
-      Rack::Handler::WEBrick.run(app.url_map, {
+      Rack::Handler::Thin.run(app.url_map, {
         :Port       => options[:port],
         :Logger     => logger,
         :AccessLog  => logger,
-
-      }) do |server|
-        @server = server
-
-        old = trap('EXIT') do
-          old.call if old
-          @server.shutdown
-        end
-      end
+      })
     end
 
     def shutdown
       Thread.kill(@thread) if @thread
-      @server.shutdown if @server
     end
 
     # courtesy of http://is.gd/eoYho

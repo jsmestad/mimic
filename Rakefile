@@ -47,8 +47,9 @@ spec = Gem::Specification.new do |s|
   # relevant versions
   s.add_dependency("rack")
   s.add_dependency("sinatra")
+  s.add_dependency("thin")
   s.add_dependency("json")
-  s.add_dependency("plist")
+  s.add_dependency("plist", "~> 3.1.0")
 
   # If your tests use any gems, include them here
   s.add_development_dependency("rspec", "~> 2.4.0")
