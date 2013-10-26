@@ -4,17 +4,17 @@ Feature: Stubbing requests by path
   I want to be able to stub requests to return specific responses depending on the request method
   
   Scenario: Stubbing a POST request to return a 201 response
-    Given I have a mimic specification with:
+    Given I have a spoofer specification with:
       """
-      Mimic.mimic(:port => 11988).post("/some/path").returning("Hello World", 201)
+      Spoofer.mimic(:port => 11988).post("/some/path").returning("Hello World", 201)
       """
     When I make an HTTP POST request to "http://localhost:11988/some/path"
     Then I should receive an HTTP 201 response with a body matching "Hello World"
 
   Scenario: Stubbing the same path with different responses for GET and POST
-    Given I have a mimic specification with:
+    Given I have a spoofer specification with:
       """
-        Mimic.mimic(:port => 11988) do
+        Spoofer.mimic(:port => 11988) do
           get("/some/path").returning("Some Record", 200)
           post("/some/path").returning("Created", 201)
         end
@@ -23,4 +23,3 @@ Feature: Stubbing requests by path
     Then I should receive an HTTP 200 response with a body matching "Some Record"
     When I make an HTTP POST request to "http://localhost:11988/some/path"
     Then I should receive an HTTP 201 response with a body matching "Created"
-    

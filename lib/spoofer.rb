@@ -1,39 +1,46 @@
-require 'mimic/fake_host'
 require 'singleton'
 require 'rack'
 require 'logger'
+require 'json'
+require 'plist'
+require 'socket'
+require 'digest'
+require 'sinatra'
 
-module Mimic
-  MIMIC_DEFAULT_PORT = 11988
+module Spoofer
+  autoload :API, 'spoofer/api'
+  autoload :FakeHost, 'spoofer/fake_host'
 
-  MIMIC_DEFAULT_OPTIONS = {
-    :hostname => 'localhost',
-    :port => MIMIC_DEFAULT_PORT,
-    :remote_configuration_path => nil,
-    :fork => true,
-    :log => nil
+  SPOOFER_DEFAULT_PORT = 11988
+
+  SPOOFER_DEFAULT_OPTIONS = {
+    hostname: 'localhost',
+    port: SPOOFER_DEFAULT_PORT,
+    remote_configuration_path: nil,
+    fork: true,
+    log: nil
   }
 
-  def self.mimic(options = {}, &block)
-    options = MIMIC_DEFAULT_OPTIONS.merge(options)
+  def self.poser(options = {}, &block)
+    options = SPOOFER_DEFAULT_OPTIONS.merge(options)
 
-    host = FakeHost.new(options).tap do |host|
-      host.instance_eval(&block) if block_given?
-      Server.instance.serve(host, options)
-    end
+    host = FakeHost.new(options).tap do |h|
+             h.instance_eval(&block) if block_given?
+             Server.instance.serve(h, options)
+           end
     add_host(host)
   end
 
   def self.cleanup!
-    Mimic::Server.instance.shutdown
+    Spoofer::Server.instance.shutdown
   end
-  
+
   def self.reset_all!
     @hosts.each { |h| h.clear }
   end
-  
-  private
-  
+
+private
+
   def self.add_host(host)
     host.tap { |h| (@hosts ||= []) << h }
   end

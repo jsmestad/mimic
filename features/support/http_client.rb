@@ -2,48 +2,48 @@ require 'rest_client'
 
 class HttpClient
   attr_reader :last_response
-  
+
   def self.use_proxy(proxy)
     RestClient.proxy = proxy
   end
-  
+
   def initialize
     @last_response = nil
   end
-  
+
   def perform_request(url, method, payload = nil, options={})
     RestClient.send(method.downcase, url, options) do |response, request|
       @last_response = response
     end
   end
-  
+
   def perform_request_with_payload(url, method, payload, options={})
     RestClient.send(method.downcase, url, payload, options) do |response, request|
       @last_response = response
     end
   end
-  
+
   def has_response_with_code_and_body?(status_code, response_body)
     if @last_response
       return @last_response.code.to_i == status_code && @last_response.to_s == response_body
     end
   end
-  
+
   def has_response_with_code?(status_code)
     if @last_response
       @last_response.code.to_i == status_code
     end
   end
-  
+
   def has_response_with_code_and_header?(status_code, header_key, header_value)
     if @last_response
       @last_response.code.to_i == status_code &&
       @last_response.headers[beautify_header(header_key)] == header_value
     end
   end
-  
-  private
-  
+
+private
+
   def beautify_header(header_key)
     header_key.downcase.gsub(/-/, '_').to_sym
   end

@@ -4,9 +4,9 @@ Feature: Injecting Rack middleware into the request chain for a stub
   I want to be able to use Rack middlewares for certain responses
   
   Scenario: Using Rack::Auth to simulate failed authentication
-    Given I have a mimic specification with:
+    Given I have a spoofer specification with:
       """
-      Mimic.mimic(:port => 11988) do
+      Spoofer.mimic(:port => 11988) do
         use Rack::Auth::Basic do |username, password|
         end
         
@@ -17,9 +17,9 @@ Feature: Injecting Rack middleware into the request chain for a stub
     Then I should receive an HTTP 401 response
     
   Scenario: Using Rack::Auth to simulate successful authentication
-    Given I have a mimic specification with:
+    Given I have a spoofer specification with:
       """
-      Mimic.mimic(:port => 11988) do
+      Spoofer.mimic(:port => 11988) do
         use Rack::Auth::Basic do |username, password|
           username == 'test' && password == 'pass'
         end

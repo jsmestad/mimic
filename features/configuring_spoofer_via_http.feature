@@ -1,15 +1,15 @@
-Feature: Configuring Mimic via an HTTP interface
-  In order to use Mimic stubs from non-Ruby test cases
+Feature: Configuring Spoofer via an HTTP interface
+  In order to use Spoofer stubs from non-Ruby test cases
   As a developer
-  I want to be able to configure a background Mimic process using an HTTP REST API
+  I want to be able to configure a background Spoofer process using an HTTP REST API
   
-  Scenario: Pinging Mimic via the API to check it's running
-    Given that Mimic is running and accepting remote configuration on "/api"
+  Scenario: Pinging Spoofer via the API to check it's running
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP GET request to "http://localhost:11988/api/ping"
     Then I should receive an HTTP 200 response with a body matching "OK"
     
   Scenario: Stubbing a request path via GET using the HTTP API
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything"}
@@ -19,7 +19,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
     
   Scenario: Stubbing a request path via POST the HTTP API
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/post" with the payload:
       """
         {"path": "/anything"}
@@ -29,7 +29,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
   
   Scenario: Stubbing a request path via PUT using the HTTP API
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/put" with the payload:
       """
         {"path": "/anything"}
@@ -39,7 +39,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
 
   Scenario: Stubbing a request path via DELETE the HTTP API for a
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/delete" with the payload:
       """
         {"path": "/anything"}
@@ -49,7 +49,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
     
   Scenario: Stubbing a request path via HEAD using the HTTP API
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/head" with the payload:
       """
         {"path": "/anything"}
@@ -59,7 +59,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
 
   Scenario: Stubbing a request path to return a custom response body
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything", "body": "Hello World"}
@@ -69,7 +69,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with a body matching "Hello World"
     
   Scenario: Stubbing a request path to return a custom status code
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything", "code": 301}
@@ -79,7 +79,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 301 response with an empty body
     
   Scenario: Stubbing a request path to return custom headers
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything", "headers": {"X-TEST-HEADER": "TESTING"}}
@@ -89,7 +89,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with the value "TESTING" for the header "X-TEST-HEADER"
     
   Scenario: Stubbing a request path that only matches with the right query params
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything", "params": {"foo": "bar"}}
@@ -101,7 +101,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response
     
   Scenario: Stubbing a request to echo it's request 
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"path": "/anything", "echo": "json"}
@@ -111,7 +111,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with the JSON value "bar" for the key path "echo.params.foo"
     
   Scenario: Stubbing a request using the HTTP API in plist format
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request with a "application/plist" content-type to "http://localhost:11988/api/get" and the payload:
       """
         <?xml version="1.0" encoding="UTF-8"?>
@@ -128,7 +128,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
     
   Scenario: Configuring multiple stubs for a single verb in a single request
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/get" with the payload:
       """
         {"stubs":[{"path": "/anything"}, {"path": "/something"}]}
@@ -140,7 +140,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
     
   Scenario: Configuring multiple stubs for different verbs in a single request
-    Given that Mimic is running and accepting remote configuration on "/api"
+    Given that Spoofer is running and accepting remote configuration on "/api"
     When I make an HTTP POST request to "http://localhost:11988/api/multi" with the payload:
       """
         {"stubs":[{"method": "GET", "path": "/anything"}, {"method": "POST", "path": "/something"}]}
@@ -152,7 +152,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 200 response with an empty body
     
   Scenario: Clearing all stubs via the HTTP API
-    Given that Mimic is running and accepting remote configuration on "/api" with the existing stubs:
+    Given that Spoofer is running and accepting remote configuration on "/api" with the existing stubs:
       """
         get("/anything").returning("hello world")
       """
@@ -161,7 +161,7 @@ Feature: Configuring Mimic via an HTTP interface
     Then I should receive an HTTP 404 response with an empty body
 
   Scenario: Clearing all stubs then resetting a stub via the API
-    Given that Mimic is running and accepting remote configuration on "/api" with the existing stubs:
+    Given that Spoofer is running and accepting remote configuration on "/api" with the existing stubs:
       """
         get("/anything").returning("hello world")
       """
